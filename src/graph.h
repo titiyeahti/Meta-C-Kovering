@@ -20,7 +20,7 @@
 #define  graph_INC
 
 #include "indicator.h"
-#include "file_handler.h"
+#include "file-handler.h"
 #include <stdlib.h>
 #include <stdio.h>
 

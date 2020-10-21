@@ -101,6 +101,7 @@ int graph_is_connected_subgraph(graph_p g, int_p ind){
   return (card == 0);
 }
 
+/* TODO define a macro to compute distance between i, j in coord */
 graph_p graph_from_coord(float* coord, uchar r, uint n){
   uint* temp;
   graph_p res;
@@ -151,6 +152,16 @@ graph_p graph_from_coord(float* coord, uchar r, uint n){
   return res;
 }
 
+graph_p graph_from_file(char* path, uchar r){
+  uint n;
+  graph_p res;
+  float* coord;
+
+  coord = coord_from_file(path, &n);
+  res = graph_from_coord(coord, r, *n);
+  return res;
+}
+
 void graph_free(graph_p g){
   free(g->vertices);
   free(g->edges);
@@ -169,3 +180,18 @@ void graph_print(graph_p g){
   }
 }
 
+void graph_print_subgraph(graph_p g, ind_p ind){
+  uint i;
+  uint* s;
+  for(i=0; i<g->n; i++){
+    if(IND_TEST(ind, i)) {
+      printf("%d : ", i);
+      FOR_ALL_NEIGH(g, i, s) {
+        if(IND_TEST(ind, *s)) {
+          printf("%d ", *s);
+        }
+      }
+      printf("\n");
+    }
+  }
+}
