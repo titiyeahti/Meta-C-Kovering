@@ -150,3 +150,22 @@ graph_p graph_from_coord(float* coord, uchar r, uint n){
 
   return res;
 }
+
+void graph_free(graph_p g){
+  free(g->vertices);
+  free(g->edges);
+  free(g);
+}
+
+void graph_print(graph_p g){
+  uint i;
+  uint* s;
+  for(i=0; i<g->n; i++){
+    printf("%d : ", i);
+    FOR_ALL_NEIGH(g, i, s){
+      prtinf("%d ", *s);
+    }
+    printf("\n");
+  }
+}
+
