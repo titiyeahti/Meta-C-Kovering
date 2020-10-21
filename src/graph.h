@@ -60,13 +60,15 @@ typedef graph_t * graph_p;
 /* A subgraph SG is represented as the tupple G, ind, where ind indicate 
  * whether or not a vertex of G is in SG*/
 
+graph_p graph_new(uint n);
+
 graph_p graph_subgraph(graph_p g, ind_p ind);
 
 int graph_is_connected_subgraph(graph_p g, ind_p ind);
 
-graph_p graph_from_coord(float* coord, uchar ra, uchar ro, uint n);
+graph_p graph_from_coord(float* coord, uchar r, uint n);
 
-graph_p graph_from_file(char* path, uchar ra, uchar ro);
+graph_p graph_from_file(char* path, uchar r);
 
 void graph_free(graph_p g);
 

@@ -32,7 +32,16 @@ typedef uchar* ind_p;
 
 #define IND_SET(ind, i) ind[(i)>>3] |= 1<<((i)&7)
 
+/* Not tested yet */
+#define IND_UNSET(ind, i) ind[(i)>>3] &= (255^(1<<((i)&7)))
+
 #define IND_TEST(ind, i) ind[(i)>>3] & (1<<((i)&7))
+
+#define IND_FILL(ind, n, k) \
+  for(k=0; k<((n)>>3); k++) ind[k] = 255
+
+#define IND_CLEAR(ind, n, k) \
+  for(k=0; k<((n)>>3); k++) ind[k] = 0
 
 #define IND_CARD(ind, n, k, card) \
   card = 0; \
