@@ -49,7 +49,7 @@ float* coord_from_file(char* path, unsigned* n){
 }
 
 void coord_print(float* coord, unsigned n){
-  int i;
+  unsigned i;
   for(i=0; i<n; i++){
     printf("x_%d = (%f, %f)\n", i, coord[2*i], coord[2*i+1]);
   }

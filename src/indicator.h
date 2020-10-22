@@ -28,9 +28,15 @@ typedef unsigned char uchar;
 
 typedef uchar* ind_p;
 
-#define IND_NEW(n) (char*) malloc(((n)>>3) * sizeof(char))
+#define IND_NEW(n) (ind_p) malloc(((n)>>3) * sizeof(char))
+
+#define IND_COPY(dest, src, n) memcpy(dest, src, (n>>3))
 
 #define IND_SET(ind, i) ind[(i)>>3] |= 1<<((i)&7)
+
+#define IND_FLIP(ind, i) ind[(i)>>3] ^= 1<<((i)&7)
+
+#define IND_DELTA_FLIP(ind, i) 2*(IND_TEST(ind, i) - 1 
 
 /* Not tested yet */
 #define IND_UNSET(ind, i) ind[(i)>>3] &= (255^(1<<((i)&7)))
@@ -55,6 +61,9 @@ typedef uchar* ind_p;
 /* Union */
 #define IND_OR(ind, ind1, ind2, n, k) \
   for(k=0; k<(n)>>3; k++) ind[k] = ind1[k] | ind2[k]
+
+#define IND_XOR(ind, ind1, ind2, n, k) \
+  for(k=0; k<(n)>>3; k++) ind[k] = ind1[k] ^ ind2[k]
 
 #define IND_FREE(ind) free(ind)
 

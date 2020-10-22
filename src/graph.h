@@ -21,6 +21,7 @@
 
 #include "indicator.h"
 #include "file-handler.h"
+#include "queue.h"
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -63,6 +64,11 @@ typedef graph_t * graph_p;
 graph_p graph_new(uint n);
 
 graph_p graph_subgraph(graph_p g, ind_p ind);
+
+void graph_connect(graph_p g, ind_p); 
+
+void graph_dfs(graph_p g, ind_p ind, uint v, 
+    void(*f)(uint, void*), void* arg)
 
 int graph_is_connected_subgraph(graph_p g, ind_p ind);
 

@@ -72,8 +72,69 @@ graph_p graph_subgraph(graph_p g, ind_p ind){
   return res;
 }
 
+/*  TODO test this thing */
+void graph_connect(graph_p g, ind_p ind){
+  uint* pred;
+  uint card, k, i;
+  uitn* v;
+  queue_p in, out;
+
+  IND_CARD(ind, g->n, k, card);
+
+  pred = malloc((g->n)*sizeof(uint));
+  for(k=0; k<g->n; k++)
+    pred[k] = g->n + 1;
+
+  in = queue_new(card);
+  out = queue_new(g->n - card);
+
+  queue_push(out, 0);
+
+  /* ~BFS over the graph until every vertex in ind have been reached 
+   *  * the vertices of ind are always explored before those who are not
+   */
+  while((QUEUE_CARD(in) || QUEUE_CARD(out))
+      && card) {
+    if (QUEUE_CARD(in))
+      k = queue_pop_top(in);
+    else 
+      k = queue_pop_bot(out);
+
+    FOR_ALL_NEIGH(g, k, v){
+      if(pred[*v] != g->n+1){
+        if(IND_TEST(ind, *v)){
+          queue_push(in, *v);
+          card --;
+        }
+        else
+          queue_push(out, *v);
+
+        pred[*v] = k;
+      }
+    }
+  }
+
+  /* connect the different connected part of ind */
+  for(k=0; k<g->n; k++){
+    if(IND_TEST(ind, k)){
+      i = pred[k];
+      while(!IND_TEST[i]){
+        IND_SET(ind, i); 
+        i = pred[i];
+      }
+    }
+  }
+
+  /* need to remove 0 as it have been added during the previous loop */
+  IND_UNSET(ind, 0);
+
+  queue_free(in);
+  queue_free(out);
+}
+
 /* Deep first search */
-void graph_dfs(graph_p g, ind_p ind, uint v, void(*f)(uint u)){
+void graph_dfs(graph_p g, ind_p ind, uint v, 
+    void(*f)(uint, void*),void* arg){
   uint* s;
   if (f) (*f)(v);
 
@@ -85,16 +146,15 @@ void graph_dfs(graph_p g, ind_p ind, uint v, void(*f)(uint u)){
   }
 }
 
-int graph_is_connected_subgraph(graph_p g, int_p ind){
+int graph_is_connected_subgraph(graph_p g, ind_p ind){
   uint k, card;
   ind_p to_see;
 
   to_see = IND_NEW(g->n);
-  IND_OR(to_see, to_see, ind, g->n, k);
-  
-  /* TODO : the first vertex should always be in the subgraphs,
-   * but who knows... be careful*/
-  graph_dfs(g, to_see, 0, NULL);
+  IND_COPY(to_see, ind, g->n);
+  IND_UNSET(to_see, 0);
+
+  graph_dfs(g, to_see, 0, NULL, NULL);
 
   IND_CARD(to_see, g->n, k, card);
 
@@ -109,10 +169,10 @@ graph_p graph_from_coord(float* coord, uchar r, uint n){
   uint ci, cj;
   float dx, dy;
   float up = (float)r*r;
-  res = new_graph(n);
+  res = graph_new(n);
 
   m = 0;
-  for(i=0; i<n i++){
+  for(i=0; i<n; i++){
     ci = 2*i;
     for(j=0; j<n; j++){
       cj = 2*j;
@@ -127,10 +187,10 @@ graph_p graph_from_coord(float* coord, uchar r, uint n){
     }
   }
 
-  res->egdes = malloc(m*sizeof(uint));
+  res->edges = malloc(m*sizeof(uint));
   res->vertices[0] = 0;
   res->vertices[n] = m;
-  for(i=0; i<n i++){
+  for(i=0; i<n; i++){
     ci = 2*i;
     m = 0;
     spot = res->vertices[i]; 
@@ -158,7 +218,7 @@ graph_p graph_from_file(char* path, uchar r){
   float* coord;
 
   coord = coord_from_file(path, &n);
-  res = graph_from_coord(coord, r, *n);
+  res = graph_from_coord(coord, r, n);
   return res;
 }
 
@@ -174,7 +234,7 @@ void graph_print(graph_p g){
   for(i=0; i<g->n; i++){
     printf("%d : ", i);
     FOR_ALL_NEIGH(g, i, s){
-      prtinf("%d ", *s);
+      printf("%d ", *s);
     }
     printf("\n");
   }
