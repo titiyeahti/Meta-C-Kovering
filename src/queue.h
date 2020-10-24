@@ -19,28 +19,26 @@
 #ifndef  queue_INC
 #define  queue_INC
 
-
-#include <stdlib.h>
-#include <stdio.h>
+#include "utils.h"
 
 typedef struct queue{
-  unsigned top;
-  unsigned bot;
-  unsigned n; 
-  unsigned* data;
+  uint top;
+  uint bot;
+  uint n; 
+  uint* data;
 } queue_t;
 
 typedef queue_t* queue_p; 
 
-queue_p queue_new(unsigned n);
+queue_p queue_new(uint n);
 
-void queue_push(queue_p q, unsigned i);
+void queue_push(queue_p q, uint i);
 
 #define QUEUE_CARD(q) q->top - q->bot
 
-unsigned queue_pop_bot(queue_p q);
+uint queue_pop_bot(queue_p q);
 
-unsigned queue_pop_top(queue_p q);
+uint queue_pop_top(queue_p q);
 
 void queue_print(queue_p q);
 

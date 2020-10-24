@@ -20,11 +20,7 @@
 #ifndef  indicator_INC
 #define  indicator_INC
 
-#include <stdio.h>
-#include <stdlib.h>
-
-typedef unsigned int uint;
-typedef unsigned char uchar;
+#include "utils.h"
 
 typedef uchar* ind_p;
 

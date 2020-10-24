@@ -19,11 +19,10 @@
 #ifndef  file_handler_INC
 #define  file_handler_INC
 
-#include <stdlib.h>
-#include <stdio.h>
+#include "utils.h"
 
-float* coord_from_file(char* path, unsigned* n);
+float* coord_from_file(char* path, uint* n);
 
-void coord_print(float* coord, unsigned n);
+void coord_print(float* coord, uint n);
 
 #endif   /* ----- #ifndef file-handler_INC  ----- */

@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  test-file-handler.c
+ *       Filename:  utils.h
  *
  *    Description:  
  *
  *        Version:  1.0
- *        Created:  21/10/2020 11:12:53
+ *        Created:  24/10/2020 11:15:05
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -15,18 +15,17 @@
  *
  * =====================================================================================
  */
+
+
+#ifndef  utils_INC
+#define  utils_INC
+
+#include <stdio.h>
 #include <stdlib.h>
-#include "file-handler.h"
 
-int main(void){
-  float* coord;
-  unsigned n;
+typedef unsigned int uint;
+typedef unsigned char uchar;
 
-  coord = coord_from_file("../Instances/captANOR150_7_4.dat", &n);
+#endif   /* ----- #ifndef utils_INC  ----- */
 
-  coord_print(coord, n);
 
-  free(coord);
-
-  return EXIT_SUCCESS;
-}

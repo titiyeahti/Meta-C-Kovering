@@ -19,11 +19,10 @@
 #ifndef  graph_INC
 #define  graph_INC
 
+#include "utils.h"
 #include "indicator.h"
 #include "file-handler.h"
 #include "queue.h"
-#include <stdlib.h>
-#include <stdio.h>
 
 /* this structure represent a graph G=(V,E) with |V| = n and |E| = m;
  * STATIC structure do not try to modify an existing one*/

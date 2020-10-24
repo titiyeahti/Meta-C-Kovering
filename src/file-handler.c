@@ -18,10 +18,10 @@
 
 #include "file-handler.h"
 
-float* coord_from_file(char* path, unsigned* n){
+float* coord_from_file(char* path, uint* n){
   FILE* stream;
   int ret;
-  unsigned i;
+  uint i;
   float x, y;
   float* coord;
   stream = fopen(path, "r");
@@ -48,8 +48,8 @@ float* coord_from_file(char* path, unsigned* n){
   return coord;
 }
 
-void coord_print(float* coord, unsigned n){
-  unsigned i;
+void coord_print(float* coord, uint n){
+  uint i;
   for(i=0; i<n; i++){
     printf("x_%d = (%f, %f)\n", i, coord[2*i], coord[2*i+1]);
   }
