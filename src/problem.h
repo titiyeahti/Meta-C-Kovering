@@ -50,7 +50,14 @@ typedef struct sol{
   uint* in_out;
   char* covering;
   uint card, n;
-  int is_ok;
+
+  /* a troolean value :
+   * 0 -> not ok
+   * 1 -> is ok
+   * -1 -> not sure*/
+  int is_covering;
+
+  int is_connected;
 } sol_t;
 
 typedef sol_t* sol_p;
@@ -63,11 +70,13 @@ sol_p sol_empty(prob_p p);
 
 int sol_verify(prob_p p, sol_p sol);
 
-void sol_add(sol_p res, sol_p old, uint i);
+void sol_add(prob_p p, sol_p res, sol_p old, uint i);
 
-void sol_rm(sol_p res, sol_p old, uint i);
+void sol_rm(prob_p p, sol_p res, sol_p old, uint i);
 
-void sol_rand_neigh(sol_p neigh, sol_p old);
+void sol_rand_neigh(prob_p p, sol_p neigh, sol_p old);
+
+void sol_fetch(prob_p p, sol_p sol, char* path);
 
 void sol_free(sol_p sol);
 

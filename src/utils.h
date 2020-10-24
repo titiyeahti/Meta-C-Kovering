@@ -26,6 +26,14 @@
 typedef unsigned int uint;
 typedef unsigned char uchar;
 
+#define RAND_UINT(n) (uint) (rand() % n)
+
+#define RAND_INT(n) rand() % n
+
+#define RAND_UNIF_01 (float)((double) rand()/(double) RAND_MAX)
+
+#define RAND_FLOAT(x, y) (float)(RAND_UNIF_01 * (y-x) + x)
+
 #endif   /* ----- #ifndef utils_INC  ----- */
 
 
