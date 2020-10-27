@@ -71,9 +71,9 @@ void graph_dfs(graph_p g, ind_p ind, uint v,
 
 int graph_is_connected_subgraph(graph_p g, ind_p ind);
 
-graph_p graph_from_coord(float* coord, uchar r, uint n);
+graph_p graph_from_coord(float* coord, char r, uint n);
 
-graph_p graph_from_file(char* path, uchar r);
+graph_p graph_from_file(char* path, char r);
 
 void graph_free(graph_p g);
 

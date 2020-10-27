@@ -162,7 +162,7 @@ int graph_is_connected_subgraph(graph_p g, ind_p ind){
 }
 
 /* TODO define a macro to compute distance between i, j in coord */
-graph_p graph_from_coord(float* coord, uchar r, uint n){
+graph_p graph_from_coord(float* coord, char r, uint n){
   uint* temp;
   graph_p res;
   uint m, i, j, spot;
@@ -212,7 +212,7 @@ graph_p graph_from_coord(float* coord, uchar r, uint n){
   return res;
 }
 
-graph_p graph_from_file(char* path, uchar r){
+graph_p graph_from_file(char* path, char r){
   uint n;
   graph_p res;
   float* coord;
