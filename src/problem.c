@@ -103,7 +103,7 @@ void sol_copy(sol_p dest, sol_p src){
 void sol_add(prob_p p, sol_p sol, uint i){
   int flag_a, flag_o, k;
   uint* v;
-  if(!(IND_TEST(ind, i))){
+  if(!(IND_TEST(sol->ind, i))){
     IND_SET(sol->ind, i);
     sol->card ++;
     flag_a = 1;
@@ -111,26 +111,59 @@ void sol_add(prob_p p, sol_p sol, uint i){
 
     /* Updating cover */
     sol->cover[i] ++;
-    flag_a &&= (sol->cover[i] >= k);
+    flag_a &&= (sol->cover[i] >= p->k);
     FOR_ALL_NEIGH(p->cover, i, v){
       sol->cover[*v] ++;
-      flag_a &&= (sol->cover[*v] >= k);
+      flag_a &&= (sol->cover[*v] >= p->k);
     }
 
-    if(flag_a)
-      sol->is_covering = 
+    if(sol->is_covering != 1)
+        sol->is_covering = flag_a ? -1 : 0;
 
     /* Short connection test */
+    FOR_ALL_NEIGH(p->connect, i, v){
+      if(IND_TEST(sol->ind, *v))
+        flag_o ||= 1;
+    }
 
+    if(flag_o)
+      sol->connected = sol->connected ? sol->connected : -1;
+    else 
+      sol->connected = 0;
   }
 }
 
-void sol_rm(prob_p p, sol_p sol, uint i);
+void sol_rm(prob_p p, sol_p sol, uint i){
+  int flag_a, k;
+  uint* v;
+  if(IND_TEST(sol->ind, i)){
+    IND_UNSET(sol->ind, i);
+    sol->card --;
 
-void sol_rand_neigh(prob_p p, sol_p sol);
+    sol->cover[i] --;
+    flag_a &&= (sol->cover[i] >= p->k);
+    FOR_ALL_NEIGH(p->cover, i, v){
+      sol->cover[*v] --;
+      flag_a &&= (sol->cover[i] >= p->k);
+    }
+    
+    if(sol->is_covering != 1)
+      sol->is_covering = flag_a ? -1 : 0;
+    else 
+      sol->is_covering = flag_a;
+  }
+}
 
-void sol_fetch(prob_p p, sol_p sol, char* path);
+void sol_rand_neigh(prob_p p, sol_p sol){
+  EXIT_ERROR("sol_rand_neigh");
+}
 
-void sol_free(sol_p sol);
+void sol_fetch(prob_p p, sol_p sol, char* path){
+  EXIT_ERROR("sol_fetch");
+}
 
-
+void sol_free(sol_p sol){
+  free(sol->ind);
+  free(sol->cover);
+  free(sol);
+}

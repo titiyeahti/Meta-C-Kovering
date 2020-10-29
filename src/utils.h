@@ -38,6 +38,10 @@ typedef unsigned char uchar;
 
 #define RAND_FLOAT(x, y) (float)(RAND_UNIF_01 * (y-x) + x)
 
+#define MAX(x, y) (x) > (y) ? (x) : (y)
+
+#define MIN(x, y) (x) > (y) ? (y) : (x)
+
 #endif   /* ----- #ifndef utils_INC  ----- */
 
 

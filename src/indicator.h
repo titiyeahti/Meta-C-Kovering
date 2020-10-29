@@ -3,7 +3,10 @@
  *
  *       Filename:  indicator.h
  *
- *    Description:  
+ *    Description:  This file defines a representation for the subsets of 
+ *          [0..MAX_INT] using indicator functions. It also implements most of
+ *          useful operations as macros. Since the names are quite explicit not 
+ *          very much commentary.
  *
  *        Version:  1.0
  *        Created:  20/10/2020 19:42:21
@@ -22,11 +25,14 @@
 
 #include "utils.h"
 
+/* A subset of [0..n] is coded as following :
+ *    * ind is an array of size (n/8 + 1);
+ *    * i in ind <=> ind[i/8] & (i % 8)*/
 typedef uchar* ind_p;
 
-#define IND_NEW(n) (ind_p) malloc(((n)>>3) * sizeof(char))
+#define IND_NEW(n) (ind_p) malloc((((n)>>3)+1) * sizeof(char))
 
-#define IND_COPY(dest, src, n) memcpy(dest, src, (n>>3)+1)
+#define IND_COPY(dest, src, n) memcpy(dest, src, ((n)>>3)+1)
 
 #define IND_SET(ind, i) (ind)[(i)>>3] |= 1<<((i)&7)
 
@@ -34,7 +40,6 @@ typedef uchar* ind_p;
 
 #define IND_DELTA_FLIP(ind, i) 2*(IND_TEST(ind, i) - 1 
 
-/* Not tested yet */
 #define IND_UNSET(ind, i) (ind)[(i)>>3] &= (255^(1<<((i)&7)))
 
 #define IND_TEST(ind, i) (ind)[(i)>>3] & (1<<((i)&7))

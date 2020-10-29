@@ -64,6 +64,8 @@ prob_p prob_from_file(char* path, char ra, char ro, char k);
 
 void prob_free(prob_p p);
 
+#define SOL_SCORE(sol, p, i) MAX(k-sol->cover[i], 0)
+
 sol_p sol_empty(prob_p p);
 
 int sol_is_covering(prob_p p, sol_p sol);

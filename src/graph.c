@@ -76,7 +76,7 @@ graph_p graph_subgraph(graph_p g, ind_p ind){
 void graph_connect(graph_p g, ind_p ind){
   uint* pred;
   uint card, k, i;
-  uitn* v;
+  uint* v;
   queue_p in, out;
 
   IND_CARD(ind, g->n, k, card);
@@ -136,7 +136,7 @@ void graph_connect(graph_p g, ind_p ind){
 void graph_dfs(graph_p g, ind_p ind, uint v, 
     void(*f)(uint, void*),void* arg){
   uint* s;
-  if (f) (*f)(v);
+  if (f) (*f)(v, arg);
 
   FOR_ALL_NEIGH(g, v, s){
     if(IND_TEST(ind, *s)){
@@ -161,45 +161,37 @@ int graph_is_connected_subgraph(graph_p g, ind_p ind){
   return (card == 0);
 }
 
-/* TODO define a macro to compute distance between i, j in coord */
 graph_p graph_from_coord(float* coord, char r, uint n){
   uint* temp;
   graph_p res;
   uint m, i, j, spot;
-  uint ci, cj;
-  float dx, dy;
+  float dist2;
   float up = (float)r*r;
   res = graph_new(n);
 
+  /* Counting edges */
   m = 0;
   for(i=0; i<n; i++){
-    ci = 2*i;
     for(j=0; j<n; j++){
-      cj = 2*j;
-
+      dist2 = COORD_SQRDIST(coord, i, j);
       if (i != j) {
-        dx = coord[ci] - coord[cj];
-        dy = coord[ci+1] - coord[cj+1];
-        if (dx*dx + dy*dy <= up){
+        if (dist2 <= up){
           m++;
         }
       }
     }
   }
 
+  /* Storing edges */
   res->edges = malloc(m*sizeof(uint));
   res->vertices[0] = 0;
   res->vertices[n] = m;
   for(i=0; i<n; i++){
-    ci = 2*i;
     m = 0;
     spot = res->vertices[i]; 
     for(j=0; j<n; j++){
-      cj = 2*j;
-
+      dist2 = COORD_SQRDIST(coord, i, j);
       if (i != j) {
-        dx = coord[ci] - coord[cj];
-        dy = coord[ci+1] - coord[cj+1];
         if (dx*dx + dy*dy <= up){
           res->edges[spot+m] = j;
           m++;

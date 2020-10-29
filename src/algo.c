@@ -1,12 +1,12 @@
 /*
  * =====================================================================================
  *
- *       Filename:  file-handler.h
+ *       Filename:  algo.c
  *
  *    Description:  
  *
  *        Version:  1.0
- *        Created:  21/10/2020 10:45:42
+ *        Created:  28/10/2020 10:34:31
  *       Revision:  none
  *       Compiler:  gcc
  *
@@ -16,17 +16,21 @@
  * =====================================================================================
  */
 
-#ifndef  file_handler_INC
-#define  file_handler_INC
+#include "algo.h"
 
-#include "utils.h"
+void greedy(prob_p p, sol_p res, 
+    uint (*select)(queue_p, sol_p, void*), 
+    void* arg){
+  queue_p q;
 
-float* coord_from_file(char* path, uint* n);
+  q = queue_new(p->n);
+  queue_push(q, 0);
 
-#define COORD_SQRDIST(c, i, j) \
-  (c[2*i] - c[2*j])*(c[2*i] - c[2*j]) + \
-  (c[2*i+1] - c[2*j+1])*(c[2*i+1] - c[2*j+1])
+  while(QUEUE_CARD(q) > 0){
+    /* choose a vertex to add to sol */
+    /* push neigh not in sol into q */
+  }
 
-void coord_print(float* coord, uint n);
+  /* check covering if not  */
+}
 
-#endif   /* ----- #ifndef file-handler_INC  ----- */

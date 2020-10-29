@@ -22,8 +22,11 @@
 #include "utils.h"
 #include "problem.h"
 
+
+/* sort of greedy algorithm to compute a solution
+ * Return : at the end, res contains a solution*/
 void greedy(prob_p p, sol_p res,
-    uint (*select)(sol_p, void*),
+    uint (*select)(queue_p, sol_p, void*),
     void* arg);
 
 void sim_annealing(prob_p p, sol_p res, 
