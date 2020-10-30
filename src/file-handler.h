@@ -3,7 +3,7 @@
  *
  *       Filename:  file-handler.h
  *
- *    Description:  
+ *    Description:  Interface to load sets of points from files. 
  *
  *        Version:  1.0
  *        Created:  21/10/2020 10:45:42
@@ -21,6 +21,10 @@
 
 #include "utils.h"
 
+/* Ensure : the returned pointer contains the coordinates of the points in file.
+ * Require : file at path of the form (%i %f %f\n)*. 
+ * WARNING : malloc.
+ * */
 float* coord_from_file(char* path, uint* n);
 
 #define COORD_SQRDIST(c, i, j) \

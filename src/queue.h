@@ -40,6 +40,10 @@ uint queue_pop_bot(queue_p q);
 
 uint queue_pop_top(queue_p q);
 
+uint queue_pop_id(queue_p q, uint i);
+
+void queue_copy(queue_p dest, queue_p src);
+
 void queue_print(queue_p q);
 
 void queue_free(queue_p q);

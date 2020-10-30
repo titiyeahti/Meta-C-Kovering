@@ -41,117 +41,98 @@ void prob_free(prob_p p){
 
 sol_p sol_empty(prob_p p){
   uint k;
+  uint *v;
   sol_p res;
 
   res = malloc(sizeof(sol_p));
+
+  res->prob = p;
+  
   res->ind = IND_NEW(p->n);
   IND_CLEAR(res->ind, p->n, k);
+  
+  res->in_queue = IND_NEW(p->n);
+  IND_CLEAR(res->in_queue, p->n, k);
+
+  res->queue = queue_new(p->n);
+  FOR_ALL_NEIGH(p->connect, 0, v){
+    queue_push(res->queue, *v);
+    IND_SET(in_queue, *v);
+  }
+
   res->cover = malloc((p->n)*sizeof(char));
   for(k=0; k<p->n; k++)
     res->cover[k] = 0;
 
-  res->n = p->n;
   res->card = 0;
-  res->is_connected = 0;
-  res->is_covering = 0;
+  res->remaining = p->n - 1;
 
   return res;
 }
 
-int sol_is_covering(prob_p p, sol_p sol){
-  int i;
-  if(sol->is_covering == -1){
-    for(i=0; i<p->n; i++){
-      if(sol->cover[i]<p->k){
-        sol->is_covering = 0;
-        return 0;
-      }
-    }
-
-    sol->is_covering = 1;
-    return 1;
-  }
-  else
-    return sol->is_covering;
-}
-
-int sol_is_connected(prob_p p, sol_p sol){
-  if(sol->is_connected == -1)
-    sol->is_connected = graph_is_connected_subgraph(p->connect, sol->ind);
+int sol_is_connected(sol_p sol){
+  int res = graph_is_connected_subgraph(sol->prob->connect, sol->ind);
   
-  return sol->is_connected;
-}
-
-int sol_verify(prob_p p, sol_p sol){
-  sol_is_connected(p, sol);
-  sol_is_covering(p, sol);
-  return (sol->is_covering && sol->is_connected);
+  return res;
 }
 
 void sol_copy(sol_p dest, sol_p src){
-  if(dest->n != src->n){
+  if(dest->prob->n != src->prob->n){
     EXIT_ERROR("sol_copy");
   }
-  dest->n = src->n; 
-  dest->card = src->card; 
-  dest->is_covering = src->is_covering; 
-  dest->is_connected = src->is_connected; 
+  dest->prob = src->prob; 
+  queue_copy(dest->queue, src->queue);
   IND_COPY(dest->ind, src->ind, src->n);
+  IND_COPY(dest->in_queue, src->in_queue, qrc->n);
   memcpy(dest->cover, src->cover, src->n * sizeof(char));
+  dest->card = src->card;
+  dest->remaining = src->remaining;
 }
 
-void sol_add(prob_p p, sol_p sol, uint i){
-  int flag_a, flag_o, k;
+void sol_add_queue_id(sol_p sol, uint i){
+  uint cur;
   uint* v;
-  if(!(IND_TEST(sol->ind, i))){
-    IND_SET(sol->ind, i);
-    sol->card ++;
-    flag_a = 1;
-    flag_o = 0;
+  /* check queue 
+   * done in queue_pop_id*/
 
-    /* Updating cover */
-    sol->cover[i] ++;
-    flag_a &&= (sol->cover[i] >= p->k);
-    FOR_ALL_NEIGH(p->cover, i, v){
-      sol->cover[*v] ++;
-      flag_a &&= (sol->cover[*v] >= p->k);
+  /* update queue */
+  cur = queue_pop_id(sol->queue, i);
+  
+  /* update in_queue */
+  FOR_ALL_NEIGH(sol->prob->connect, cur, v){
+    if(!IND_TEST(sol->in_queue, *v)){
+      queue_push(sol->queue, *v);
+      IND_SET(sol->in_queue, *v);
     }
+  }
 
-    if(sol->is_covering != 1)
-        sol->is_covering = flag_a ? -1 : 0;
+  /* update ind */
+  IND_SET(sol->ind, cur);
 
-    /* Short connection test */
-    FOR_ALL_NEIGH(p->connect, i, v){
-      if(IND_TEST(sol->ind, *v))
-        flag_o ||= 1;
+  /* update card */
+  sol->card ++;
+
+  /* update cover & remaining */
+  sol->cover[cur] ++;
+  /* if cur is covered AND cur is not 0 the well */
+  if((sol->cover[cur] = p->k) && cur)
+    sol->remaining --;
+
+  FOR_ALL_NEIGH(sol->prob->cover, cur, v){
+    if(!IND_TEST(sol->ind, *v)){
+      sol->cover[cur] ++;
+      if((sol->cover[*v] = p->k) && cur)
+        sol->remaining --;
     }
-
-    if(flag_o)
-      sol->connected = sol->connected ? sol->connected : -1;
-    else 
-      sol->connected = 0;
   }
 }
 
-void sol_rm(prob_p p, sol_p sol, uint i){
-  int flag_a, k;
-  uint* v;
-  if(IND_TEST(sol->ind, i)){
-    IND_UNSET(sol->ind, i);
-    sol->card --;
-
-    sol->cover[i] --;
-    flag_a &&= (sol->cover[i] >= p->k);
-    FOR_ALL_NEIGH(p->cover, i, v){
-      sol->cover[*v] --;
-      flag_a &&= (sol->cover[i] >= p->k);
-    }
-    
-    if(sol->is_covering != 1)
-      sol->is_covering = flag_a ? -1 : 0;
-    else 
-      sol->is_covering = flag_a;
-  }
+void sol_add_select_id(sol_p sol, 
+    uint(*select)(sol_p, void*),
+    void* arg){
+  uint index;
+  index = select(sol, arg);
+  sol_add_queue_id(sol, index);
 }
 
 void sol_rand_neigh(prob_p p, sol_p sol){
@@ -163,7 +144,10 @@ void sol_fetch(prob_p p, sol_p sol, char* path){
 }
 
 void sol_free(sol_p sol){
+  prop_free(sol->prob);
   free(sol->ind);
+  free(sol->in_queue);
+  queue_free(sol->queue);
   free(sol->cover);
   free(sol);
 }

@@ -19,6 +19,7 @@
 #ifndef  problem_INC
 #define  problem_INC
 
+#include "queue.h"
 #include "utils.h"
 #include "indicator.h"
 #include "file_handler.h"
@@ -46,16 +47,13 @@ typedef struct prob{
 typedef prob_t* prob_p;
 
 typedef struct sol{
+  prob_p prob;
   ind_p ind;
+  ind_p in_queue;
+  queue_p queue;
   char* cover;
-  uint card, n;
-
-  /* a troolean value :
-   * 0 -> not ok
-   * 1 -> is ok
-   * -1 -> not sure*/
-  int is_covering;
-  int is_connected;
+  uint card;
+  uint remaining;
 } sol_t;
 
 typedef sol_t* sol_p;
@@ -64,25 +62,29 @@ prob_p prob_from_file(char* path, char ra, char ro, char k);
 
 void prob_free(prob_p p);
 
-#define SOL_SCORE(sol, p, i) MAX(k-sol->cover[i], 0)
+#define SOL_SCORE(sol, i) MAX(sol->prob->k - sol->cover[i], 0)
 
 sol_p sol_empty(prob_p p);
 
-int sol_is_covering(prob_p p, sol_p sol);
+#define SOL_COVERS(sol) (sol->remaining <= 0)
+
+int sol_is_covering(sol_p sol);
 
 int sol_is_connected(prob_p p, sol_p sol);
 
-int sol_verify(prob_p p, sol_p sol);
-
 void sol_copy(sol_p dest, sol_p src);
 
-void sol_add(prob_p p, sol_p sol, uint i);
+void sol_add_queue_id(sol_p sol, uint i);
 
-void sol_rm(prob_p p, sol_p sol, uint i);
+void sol_add_select(sol_p sol, 
+    uint(*select)(sol_p, void*), 
+    void* arg);
 
-void sol_rand_neigh(prob_p p, sol_p sol);
+/* select a random valid neighbour of sol :
+ * */
+void sol_rand_neigh(sol_p sol);
 
-void sol_fetch(prob_p p, sol_p sol, char* path);
+void sol_fetch(sol_p sol, char* path);
 
 void sol_free(sol_p sol);
 

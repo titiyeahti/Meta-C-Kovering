@@ -59,11 +59,36 @@ uint queue_pop_top(queue_p q) {
   if(QUEUE_CARD(q)){
     q->top --;
     res = q->data[q->top];
+
+    return res;
   }
   else {
     fprintf(stderr, "queue_pop_top : queue is empty\n");
     exit(EXIT_FAILURE);
   }
+}
+
+uint queue_pop_id(queue_p q, uint i) {
+  uint res;
+
+  if(i>=QUEUE_CARD(q)){
+    EXIT_ERROR("queue_pop_id");
+  }
+
+  q->top --;
+  res = q->data[q->bot + i];
+  q->data[q->bot + i] = q->data[q->top];
+
+  return res;
+}
+
+void queue_copy(queue_p dest, queue_p src){
+  if(dest->n != src->n){
+    EXIT_ERROR("queue_copy");
+  }
+  dest->top = src->top;
+  dest->bot = src->bot;
+  memcpy(dest->data, src->data, (src->n)*sizeof(uint));
 }
 
 void queue_print(queue_p q){

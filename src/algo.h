@@ -23,10 +23,11 @@
 #include "problem.h"
 
 
-/* sort of greedy algorithm to compute a solution
- * Return : at the end, res contains a solution*/
+/* Ensure : res contains a valid solution at the end.
+ * Require : select must return an elt from a queue and update it.
+ * */
 void greedy(prob_p p, sol_p res,
-    uint (*select)(queue_p, sol_p, void*),
+    uint (*select)(sol_p, void*),
     void* arg);
 
 void sim_annealing(prob_p p, sol_p res, 
