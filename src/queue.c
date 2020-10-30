@@ -22,7 +22,7 @@ queue_p new_queue(uint n){
   queue_p ret = malloc(sizeof(queue_p));
   ret->top = 0;
   ret->bot = 0;
-  res->n = n;
+  ret->n = n;
   ret->data = malloc(n*sizeof(uint));
 
   return ret;
@@ -30,7 +30,7 @@ queue_p new_queue(uint n){
 
 void queue_push(queue_p q, uint i){
   if(q->top < q->n){
-    q->data[top] = i;
+    q->data[q->top] = i;
     q->top ++;
   }
   else {

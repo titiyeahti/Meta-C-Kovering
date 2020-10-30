@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef unsigned int uint;
 typedef unsigned char uchar;
@@ -32,7 +33,9 @@ typedef unsigned char uchar;
 
 #define RAND_UINT(n) (uint) (rand() % n)
 
-#define RAND_INT(n) rand() % n
+#define RAND_INT(n) (rand() % n)
+
+#define RAND_INT_AB(a, b) (RAND_INT((b)-(a)) + (a))
 
 #define RAND_UNIF_01 (float)((double) rand()/(double) RAND_MAX)
 

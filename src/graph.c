@@ -118,7 +118,7 @@ void graph_connect(graph_p g, ind_p ind){
   for(k=0; k<g->n; k++){
     if(IND_TEST(ind, k)){
       i = pred[k];
-      while(!IND_TEST[i]){
+      while(!IND_TEST(ind, i)){
         IND_SET(ind, i); 
         i = pred[i];
       }
@@ -141,7 +141,7 @@ void graph_dfs(graph_p g, ind_p ind, uint v,
   FOR_ALL_NEIGH(g, v, s){
     if(IND_TEST(ind, *s)){
       IND_UNSET(ind, *s);
-      graph_dfs(g, ind, *s, f);
+      graph_dfs(g, ind, *s, f, arg);
     }
   }
 }
@@ -158,6 +158,7 @@ int graph_is_connected_subgraph(graph_p g, ind_p ind){
 
   IND_CARD(to_see, g->n, k, card);
 
+  free(to_see);
   return (card == 0);
 }
 
@@ -192,7 +193,7 @@ graph_p graph_from_coord(float* coord, char r, uint n){
     for(j=0; j<n; j++){
       dist2 = COORD_SQRDIST(coord, i, j);
       if (i != j) {
-        if (dx*dx + dy*dy <= up){
+        if (dist2 <= up){
           res->edges[spot+m] = j;
           m++;
         }

@@ -94,36 +94,35 @@ void sol_add_queue_id(sol_p sol, uint i){
   uint* v;
   /* check queue 
    * done in queue_pop_id*/
-
+  
   /* update queue */
   cur = queue_pop_id(sol->queue, i);
-  
   /* update in_queue */
+  IND_UNSET(sol->in_queue, cur);
+
+  /* update ind */
+  IND_SET(sol->ind, cur);
+  /* update card */
+  sol->card ++;
+
   FOR_ALL_NEIGH(sol->prob->connect, cur, v){
-    if(!IND_TEST(sol->in_queue, *v)){
+    /* if *v is neither in the queue nor in the curent sol (ind) */
+    if(!(IND_TEST(sol->in_queue, *v) || IND_TEST(sol->ind, *v))){
       queue_push(sol->queue, *v);
       IND_SET(sol->in_queue, *v);
     }
   }
 
-  /* update ind */
-  IND_SET(sol->ind, cur);
-
-  /* update card */
-  sol->card ++;
-
   /* update cover & remaining */
   sol->cover[cur] ++;
-  /* if cur is covered AND cur is not 0 the well */
+  /* if cur is covered AND cur is not 0 (the well) */
   if((sol->cover[cur] = p->k) && cur)
     sol->remaining --;
 
   FOR_ALL_NEIGH(sol->prob->cover, cur, v){
-    if(!IND_TEST(sol->ind, *v)){
-      sol->cover[cur] ++;
-      if((sol->cover[*v] = p->k) && cur)
-        sol->remaining --;
-    }
+    sol->cover[cur] ++;
+    if((sol->cover[*v] = p->k) && cur)
+      sol->remaining --;
   }
 }
 
@@ -135,8 +134,36 @@ void sol_add_select_id(sol_p sol,
   sol_add_queue_id(sol, index);
 }
 
-void sol_rand_neigh(prob_p p, sol_p sol){
-  EXIT_ERROR("sol_rand_neigh");
+void sol_rand_neigh(sol_p sol){
+  uint nb_neigh, rd, qcard, k;
+
+  qcard = QUEUE_CARD(sol->queue);
+  nb_neigh = sol->card + qcard;
+  rd = RAND_UINT(nb_neigh);
+
+  if(rd < qcard){
+    sol_add_queue_id(sol, rd);
+  }
+  else {
+    rd = rd - qcard;
+    for(k=0; k<sol->prob->n; k++){
+      if(IND_TEST(ind, k)){
+        if(rd == 0){
+          rd = k;
+          break;
+        }
+        rd --;
+      }
+    }
+
+    IND_UNSET(sol->ind, rd);
+    sol->card --;
+    queue_push(sol->queue, rd);
+
+    if(!sol_is_connected(sol)){
+
+    }
+  }
 }
 
 void sol_fetch(prob_p p, sol_p sol, char* path){

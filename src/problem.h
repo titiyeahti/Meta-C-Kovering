@@ -70,7 +70,7 @@ sol_p sol_empty(prob_p p);
 
 int sol_is_covering(sol_p sol);
 
-int sol_is_connected(prob_p p, sol_p sol);
+int sol_is_connected(sol_p sol);
 
 void sol_copy(sol_p dest, sol_p src);
 

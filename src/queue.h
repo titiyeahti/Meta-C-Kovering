@@ -21,6 +21,7 @@
 
 #include "utils.h"
 
+/* TODO add in_queue in the queue structure */
 typedef struct queue{
   uint top;
   uint bot;
@@ -34,7 +35,7 @@ queue_p queue_new(uint n);
 
 void queue_push(queue_p q, uint i);
 
-#define QUEUE_CARD(q) q->top - q->bot
+#define QUEUE_CARD(q) (q->top - q->bot)
 
 uint queue_pop_bot(queue_p q);
 
