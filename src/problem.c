@@ -21,7 +21,7 @@
 prob_p prob_from_file(char* path, char ra, char ro, char k){
   prob_p res;
 
-  res = malloc(sizeof(prob_s));
+  res = malloc(sizeof(prob_p));
   res->coord = coord_from_file(path, &(res->n));
   res->cover = graph_from_coord(res->coord, ra, res->n);
   res->connect = graph_from_coord(res->coord, ro, res->n);
@@ -36,7 +36,9 @@ void prob_free(prob_p p){
   graph_free(p->cover);
   graph_free(p->connect);
   free(p->coord);
-  free(prob_p p);
+  p->coord = NULL;
+  free(p);
+  p = NULL;
 }
 
 sol_p sol_empty(prob_p p){
@@ -49,7 +51,7 @@ sol_p sol_empty(prob_p p){
   res->prob = p;
   
   res->ind = IND_NEW(p->n);
-  IND_CLEAR(res->ind, p->n, k);
+  IND_CLEAR(res->ind, p->n, k) ;
   
   res->in_queue = IND_NEW(p->n);
   IND_CLEAR(res->in_queue, p->n, k);
@@ -57,7 +59,7 @@ sol_p sol_empty(prob_p p){
   res->queue = queue_new(p->n);
   FOR_ALL_NEIGH(p->connect, 0, v){
     queue_push(res->queue, *v);
-    IND_SET(in_queue, *v);
+    IND_SET(res->in_queue, *v);
   }
 
   res->cover = malloc((p->n)*sizeof(char));
@@ -82,9 +84,9 @@ void sol_copy(sol_p dest, sol_p src){
   }
   dest->prob = src->prob; 
   queue_copy(dest->queue, src->queue);
-  IND_COPY(dest->ind, src->ind, src->n);
-  IND_COPY(dest->in_queue, src->in_queue, qrc->n);
-  memcpy(dest->cover, src->cover, src->n * sizeof(char));
+  IND_COPY(dest->ind, src->ind, src->prob->n);
+  IND_COPY(dest->in_queue, src->in_queue, src->prob->n);
+  memcpy(dest->cover, src->cover, src->prob->n * sizeof(char));
   dest->card = src->card;
   dest->remaining = src->remaining;
 }
@@ -116,17 +118,17 @@ void sol_add_queue_id(sol_p sol, uint i){
   /* update cover & remaining */
   sol->cover[cur] ++;
   /* if cur is covered AND cur is not 0 (the well) */
-  if((sol->cover[cur] = p->k) && cur)
+  if((sol->cover[cur] = sol->prob->k) && cur)
     sol->remaining --;
 
   FOR_ALL_NEIGH(sol->prob->cover, cur, v){
     sol->cover[cur] ++;
-    if((sol->cover[*v] = p->k) && cur)
+    if((sol->cover[*v] = sol->prob->k) && cur)
       sol->remaining --;
   }
 }
 
-void sol_add_select_id(sol_p sol, 
+void sol_add_select(sol_p sol, 
     uint(*select)(sol_p, void*),
     void* arg){
   uint index;
@@ -134,8 +136,9 @@ void sol_add_select_id(sol_p sol,
   sol_add_queue_id(sol, index);
 }
 
-void sol_rand_neigh(sol_p sol){
+int sol_rand_neigh(sol_p sol){
   uint nb_neigh, rd, qcard, k;
+  uint* v;
 
   qcard = QUEUE_CARD(sol->queue);
   nb_neigh = sol->card + qcard;
@@ -143,11 +146,13 @@ void sol_rand_neigh(sol_p sol){
 
   if(rd < qcard){
     sol_add_queue_id(sol, rd);
+    return 1;
   }
   else {
+    /* select a vertex to remove */
     rd = rd - qcard;
     for(k=0; k<sol->prob->n; k++){
-      if(IND_TEST(ind, k)){
+      if(IND_TEST(sol->ind, k)){
         if(rd == 0){
           rd = k;
           break;
@@ -156,25 +161,44 @@ void sol_rand_neigh(sol_p sol){
       }
     }
 
+    /* cover constraint */
+    FOR_ALL_NEIGH(sol->prob->cover, rd, v){
+      if((sol->cover[*v]-1) < k)
+        return 0;
+    }
+
+    /* connectivity constraint */
     IND_UNSET(sol->ind, rd);
-    sol->card --;
-    queue_push(sol->queue, rd);
-
-    if(!sol_is_connected(sol)){
-
+    if(sol_is_connected(sol)){
+      /* update everything */
+      sol->card --;
+      queue_push(sol->queue, rd);
+      IND_SET(sol->in_queue, rd);
+      FOR_ALL_NEIGH(sol->prob->cover, rd, v)
+        sol->cover[*v] --;
+      
+      return 1;
+    }
+    else{
+      IND_SET(sol->ind, rd);
+      return 0;
     }
   }
 }
 
-void sol_fetch(prob_p p, sol_p sol, char* path){
+void sol_fetch(sol_p sol, char* path){
   EXIT_ERROR("sol_fetch");
 }
 
 void sol_free(sol_p sol){
-  prop_free(sol->prob);
+  prob_free(sol->prob);
   free(sol->ind);
+  sol->ind = NULL;
   free(sol->in_queue);
+  sol->in_queue = NULL;
   queue_free(sol->queue);
   free(sol->cover);
+  sol->cover = NULL;
   free(sol);
+  sol = NULL;
 }

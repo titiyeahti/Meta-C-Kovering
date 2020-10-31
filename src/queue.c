@@ -101,5 +101,7 @@ void queue_print(queue_p q){
 
 void queue_free(queue_p q){
   free(q->data);
+  q->data = NULL;
   free(q);
+  q = NULL;
 }

@@ -27,7 +27,7 @@
 
 /* A subset of [0..n] is coded as following :
  *    * ind is an array of size (n/8 + 1);
- *    * i in ind <=> ind[i/8] & (i % 8)*/
+ *    * i in ind <=> ind[i/8] & 2^(i % 8)*/
 typedef uchar* ind_p;
 
 #define IND_NEW(n) (ind_p) malloc((((n)>>3)+1) * sizeof(char))
@@ -44,11 +44,9 @@ typedef uchar* ind_p;
 
 #define IND_TEST(ind, i) ((ind)[(i)>>3] & (1<<((i)&7)))
 
-#define IND_FILL(ind, n, k) \
-  for(k=0; k<((n)>>3)+1; k++) (ind)[k] = 255
+#define IND_FILL(ind, n, k)�for(k=0; k<((n)>>3)+1; k++) ind[k] = 255
 
-#define IND_CLEAR(ind, n, k) \
-  for(k=0; k<((n)>>3)+1; k++) (ind)[k] = 0
+#define IND_CLEAR(ind, n, k) for(k=0; k<((n)>>3)+1; k++) ind[k] = 0
 
 #define IND_CARD(ind, n, k, card) \
   card = 0; \

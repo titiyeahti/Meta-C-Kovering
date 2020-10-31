@@ -22,7 +22,7 @@
 #include "queue.h"
 #include "utils.h"
 #include "indicator.h"
-#include "file_handler.h"
+#include "file-handler.h"
 #include "graph.h"
 
 typedef struct prob{
@@ -62,8 +62,6 @@ prob_p prob_from_file(char* path, char ra, char ro, char k);
 
 void prob_free(prob_p p);
 
-#define SOL_SCORE(sol, i) MAX(sol->prob->k - sol->cover[i], 0)
-
 sol_p sol_empty(prob_p p);
 
 #define SOL_COVERS(sol) (sol->remaining <= 0)
@@ -82,7 +80,7 @@ void sol_add_select(sol_p sol,
 
 /* select a random valid neighbour of sol :
  * */
-void sol_rand_neigh(sol_p sol);
+int sol_rand_neigh(sol_p sol);
 
 void sol_fetch(sol_p sol, char* path);
 

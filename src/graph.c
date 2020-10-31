@@ -217,8 +217,11 @@ graph_p graph_from_file(char* path, char r){
 
 void graph_free(graph_p g){
   free(g->vertices);
+  g->vertices = NULL;
   free(g->edges);
+  g->edges = NULL;
   free(g);
+  g = NULL;
 }
 
 void graph_print(graph_p g){

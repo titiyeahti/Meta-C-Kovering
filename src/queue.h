@@ -43,6 +43,13 @@ uint queue_pop_top(queue_p q);
 
 uint queue_pop_id(queue_p q, uint i);
 
+/* queue is the queue and v is a pointer to uint (uint*) 
+ * this macro iterates over the elements in que queue.
+ * */
+#define QUEUE_ITER(q, v) \
+  for(v= q->data + q->bot; \
+      v< q->data + q->top; v ++)
+
 void queue_copy(queue_p dest, queue_p src);
 
 void queue_print(queue_p q);
