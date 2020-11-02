@@ -66,9 +66,12 @@ sol_p sol_empty(prob_p p);
 
 #define SOL_COVERS(sol) (sol->remaining <= 0)
 
-int sol_is_covering(sol_p sol);
-
 int sol_is_connected(sol_p sol);
+
+/* Ensure : the score of i in sol, i.e. the number of useful covers if
+ *    i is ad added to the solution.
+ * Require : i < sol->prob->n*/
+uint sol_score(sol_p sol, uint i);
 
 void sol_copy(sol_p dest, sol_p src);
 

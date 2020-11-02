@@ -54,8 +54,8 @@ typedef graph_t * graph_p;
 
 /* iterate over the pointer to neighbour */
 #define FOR_ALL_NEIGH(G, i, n)\
-  for(n = G->edges + G->vertices[i]; \
-      n < G->edges + G->vertices[i+1]; \
+  for(n = (G)->edges + (G)->vertices[i]; \
+      n < (G)->edges + (G)->vertices[i+1]; \
       n++)
 
 /* A subgraph SG is represented as the tupple G, ind, where ind indicate 

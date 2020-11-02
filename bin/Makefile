@@ -1,6 +1,6 @@
 CC=gcc
 SRC=../src/
-INCLUDES=
+INCLUDES=-lmath
 FLAGS=-ansi -Wall -Wextra -g
 OPT=-O3
 

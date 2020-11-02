@@ -78,6 +78,19 @@ int sol_is_connected(sol_p sol){
   return res;
 }
 
+uint sol_score(sol_p sol, uint i){
+  uint res = 0;
+  uint* v;
+
+  if(sol->cover[i] < sol->prob->k)
+    res ++;
+
+  FOR_ALL_NEIGH(sol->prob->cover, i, v){
+    if(sol->cover[*v] < sol->prob->k)
+      res ++;
+  }
+}
+
 void sol_copy(sol_p dest, sol_p src){
   if(dest->prob->n != src->prob->n){
     EXIT_ERROR("sol_copy");
