@@ -85,8 +85,6 @@ void sol_add_select(sol_p sol,
  * */
 int sol_rand_neigh(sol_p sol);
 
-void sol_fetch(sol_p sol, char* path);
-
 void sol_free(sol_p sol);
 
 #endif   /* ----- #ifndef problem_INC  ----- */

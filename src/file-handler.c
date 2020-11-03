@@ -31,7 +31,7 @@ float* coord_from_file(char* path, uint* n){
   *n = 0;
   ret = fscanf(stream, "%d %f %f", &i, &x, &y);
   while (*n == i){
-    printf("%d %d %f %f \n", *n, i, x, y);
+    /*  printf("%d %d %f %f \n", *n, i, x, y);*/
     (*n) ++;
     ret = fscanf(stream, "%d %f %f", &i, &x, &y);
   }

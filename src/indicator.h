@@ -38,8 +38,6 @@ typedef uchar* ind_p;
 
 #define IND_FLIP(ind, i) (ind)[(i)>>3] ^= 1<<((i)&7)
 
-#define IND_DELTA_FLIP(ind, i) 2*(IND_TEST(ind, i) - 1 
-
 #define IND_UNSET(ind, i) (ind)[(i)>>3] &= (255^(1<<((i)&7)))
 
 #define IND_TEST(ind, i) ((ind)[(i)>>3] & (1<<((i)&7)))

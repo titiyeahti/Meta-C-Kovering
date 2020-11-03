@@ -214,8 +214,11 @@ uint select_best(sol_p sol, void* arg){
   best = sol_score(sol, sol->queue->data[sol->queue->bot]);
 
   k=0;
+  index=0;
+  printf(" queue card = %d \n", QUEUE_CARD(sol->queue));
   QUEUE_ITER(sol->queue, v){
     cur = sol_score(sol, *v);
+      printf("best = %d, cur = %d, index = %d\n", best, cur, index);
     if(cur > best){
       best = cur;
       index = k; 
@@ -223,7 +226,6 @@ uint select_best(sol_p sol, void* arg){
 
     k++;
   }
-
   return index;
 }
 

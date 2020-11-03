@@ -20,6 +20,7 @@
 #define  queue_INC
 
 #include "utils.h"
+#include "indicator.h"
 
 /* TODO add in_queue in the queue structure */
 typedef struct queue{

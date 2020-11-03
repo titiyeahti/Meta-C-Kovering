@@ -20,14 +20,15 @@
 
 prob_p prob_from_file(char* path, char ra, char ro, char k){
   prob_p res;
-
+  uint n;
   res = malloc(sizeof(prob_p));
-  res->coord = coord_from_file(path, &(res->n));
-  res->cover = graph_from_coord(res->coord, ra, res->n);
-  res->connect = graph_from_coord(res->coord, ro, res->n);
+  res->coord = coord_from_file(path, &n);
+  res->cover = graph_from_coord(res->coord, ra, n);
+  res->connect = graph_from_coord(res->coord, ro, n);
   res->ra = ra;
   res->ro = ro;
   res->k = k;
+  res->n = n;
 
   return res;
 }
@@ -49,7 +50,7 @@ sol_p sol_empty(prob_p p){
   res = malloc(sizeof(sol_p));
 
   res->prob = p;
-  
+
   res->ind = IND_NEW(p->n);
   IND_CLEAR(res->ind, p->n, k) ;
   
@@ -57,6 +58,7 @@ sol_p sol_empty(prob_p p){
   IND_CLEAR(res->in_queue, p->n, k);
 
   res->queue = queue_new(p->n);
+
   FOR_ALL_NEIGH(p->connect, 0, v){
     queue_push(res->queue, *v);
     IND_SET(res->in_queue, *v);
@@ -86,9 +88,11 @@ uint sol_score(sol_p sol, uint i){
     res ++;
 
   FOR_ALL_NEIGH(sol->prob->cover, i, v){
-    if(sol->cover[*v] < sol->prob->k)
+    if(sol->cover[*v] <  sol->prob->k)
       res ++;
   }
+
+  return res;
 }
 
 void sol_copy(sol_p dest, sol_p src){
@@ -147,6 +151,7 @@ void sol_add_select(sol_p sol,
   uint index;
   index = select(sol, arg);
   sol_add_queue_id(sol, index);
+  printf("end of sol_add_select\n");
 }
 
 int sol_rand_neigh(sol_p sol){
@@ -176,7 +181,7 @@ int sol_rand_neigh(sol_p sol){
 
     /* cover constraint */
     FOR_ALL_NEIGH(sol->prob->cover, rd, v){
-      if((sol->cover[*v]-1) < k)
+      if((sol->cover[*v]-1) < (int)k)
         return 0;
     }
 
@@ -199,19 +204,22 @@ int sol_rand_neigh(sol_p sol){
   }
 }
 
-void sol_fetch(sol_p sol, char* path){
-  EXIT_ERROR("sol_fetch");
-}
-
 void sol_free(sol_p sol){
   prob_free(sol->prob);
-  free(sol->ind);
-  sol->ind = NULL;
+
   free(sol->in_queue);
   sol->in_queue = NULL;
+
+  /* TODO make this work */
+/*   free(sol->ind);
+ *   sol->ind = NULL;
+ */
+
+
   queue_free(sol->queue);
   free(sol->cover);
   sol->cover = NULL;
+
   free(sol);
   sol = NULL;
 }
