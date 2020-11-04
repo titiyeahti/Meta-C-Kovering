@@ -25,8 +25,10 @@ float* coord_from_file(char* path, uint* n){
   float x, y;
   float* coord;
   stream = fopen(path, "r");
-  if(!stream)
+  if(!stream){
     printf("could not open : %s\n", path);
+    EXIT_ERROR("coord_from_file");
+  }
 
   *n = 0;
   ret = fscanf(stream, "%d %f %f", &i, &x, &y);

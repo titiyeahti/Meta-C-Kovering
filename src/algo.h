@@ -32,6 +32,8 @@
 /* Ant colony :
  * rho -> evaporation coeff*/
 #define RHO .5
+#define ANT_NUMBER 16
+#define TMAX 100
 
 /* deposit coeff */
 #define Q_COEFF .1

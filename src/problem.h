@@ -53,7 +53,7 @@ typedef struct sol{
   queue_p queue;
   char* cover;
   uint card;
-  uint remaining;
+  int remaining;
 } sol_t;
 
 typedef sol_t* sol_p;

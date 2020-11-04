@@ -21,7 +21,6 @@
 void greedy(sol_p res, 
     uint (*select)(sol_p, void*), 
     void* arg){
-  
 
   while((res->remaining > 0) && (QUEUE_CARD(res->queue)>0)){
     sol_add_select(res, select, arg);
@@ -107,7 +106,7 @@ void ant_colony(sol_p res, uint ant_nb, uint tmax){
     pherom_new[i] = 0;
   }
 
-  /* SCORE is proportional with n and k */
+  /* card is proportional with n and k */
   big_q = Q_COEFF * (float) res->prob->n * res->prob->k / (float) ant_nb;
 
   /* ALGO LIES HERE */
@@ -171,6 +170,7 @@ void ant_colony_sa(sol_p res, uint ant_nb, uint tmax, float t0, float mu){
 
   /* ALGO LIES HERE */
   for(t=0; t<tmax; t++){
+    printf("best->card : %d\n", best->card);
     for(ant=0; ant < ant_nb; ant++){
       sol_copy(cur, res);
       greedy(cur, select_fortune_wheel, pherom);
@@ -264,7 +264,7 @@ uint select_fortune_wheel(sol_p sol, void* arg){
 
   q_card = QUEUE_CARD(sol->queue);
 
-  if(q_card){
+  if(!q_card){
     fprintf(stderr, "sol->queue is empty\n");
     EXIT_ERROR("select_fortune_wheel");
   }

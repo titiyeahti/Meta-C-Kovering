@@ -28,11 +28,17 @@ The goal here is to implement an heuristic to obtain a good solution for the pro
 ### Modeling
 We choose to model this problem as a pair of non-oriented graphs G_a and G_o. 
 
-### Data structures
-#### Graph
-#### Indicator function
+## Usage
 
-### First solution : greedy algorithm
+The main program will run the ant\_colony algorithm on the given input files.
+The input files must be in `instances` folder, and you must only specify their name, NOT their path.
+The result are stored in `results`.
+
+```
+$cd bin 
+$make 
+$./main.out input_files 
+```
 
 ## Contributors
 

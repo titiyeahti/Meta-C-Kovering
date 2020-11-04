@@ -5,7 +5,15 @@ OPT=-O3
 FLAGS=-ansi -Wall -Wextra -g $(OPT)
 OBJ=file-handler.o graph.o queue.o problem.o algo.o
 
-all: test-graph.out test-problem.out test-file-handler.out test-greedy.out
+all : main.out
+
+run : main.out
+	./main.out captANOR150_7_4.dat
+
+main.out : $(SRC)main.c $(OBJ)
+	$(CC) $(FLAGS) $(INCLUDES) $^ -o $@
+
+test : test-graph.out test-problem.out test-file-handler.out test-greedy.out
 
 test-%.out : $(SRC)test-%.c $(OBJ)
 	$(CC) $(FLAGS) $(INCLUDES) $^ -o $@

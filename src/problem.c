@@ -149,12 +149,12 @@ void sol_add_queue_id(sol_p sol, uint i){
   /* update cover & remaining */
   sol->cover[cur] ++;
   /* if cur is covered */
-  if((sol->cover[cur] == sol->prob->k))
+  if((sol->cover[cur] == sol->prob->k)&& cur )
     sol->remaining --;
 
   FOR_ALL_NEIGH(sol->prob->cover, cur, v){
     sol->cover[*v] ++;
-    if((sol->cover[*v] == sol->prob->k))
+    if((sol->cover[*v] == sol->prob->k)&&(*v))
       sol->remaining --;
   }
 }
@@ -220,8 +220,6 @@ int sol_rand_neigh(sol_p sol){
 }
 
 void sol_free(sol_p sol){
-  prob_free(sol->prob);
-
   free(sol->in_queue);
   sol->in_queue = NULL;
 

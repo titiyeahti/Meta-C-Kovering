@@ -29,7 +29,7 @@ typedef unsigned int uint;
 typedef unsigned char uchar;
 
 #define EXIT_ERROR(fct_name) \
-  fprintf(stderr, "error at %s:%s:%d\n", fct_name, __FILE__, __LINE__); \
+  fprintf(stdout, "error at %s:%s:%d\n", fct_name, __FILE__, __LINE__); \
   exit(EXIT_FAILURE)
 
 #define RAND_UINT(n) (uint) (rand() % n)
