@@ -283,6 +283,7 @@ uint select_fortune_wheel(sol_p sol, void* arg){
 
   random = RAND_FLOAT(0, acc_score[q_card]); 
   k = dich_spot(acc_score, random, q_card+1);
+  free(acc_score);
   return k;
 }
 
