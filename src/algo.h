@@ -31,12 +31,12 @@
 
 /* Ant colony :
  * rho -> evaporation coeff*/
-#define RHO .5
+#define RHO .7
 #define ANT_NUMBER 32
-#define TMAX 200
+#define TMAX 100
 
 /* deposit coeff */
-#define Q_COEFF 10.
+#define Q_COEFF .1
 
 
 /* Ensure : res contains a valid solution at the end.

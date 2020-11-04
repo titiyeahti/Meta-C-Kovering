@@ -20,7 +20,7 @@
 #include <time.h>
 #include "algo.h"
 
-#define NB_RUNS 100
+#define NB_RUNS 1
 
 int double_compare(const void* x, const void* y){
   double* fx = (double*)x;
@@ -46,6 +46,9 @@ double* quartiles(double* t, uint n){
 }
 
 int main(int argc, char** argv){
+#ifdef RAND
+  printf("RAND WHEEL\n");
+#endif
   int i;
   char ra; 
   char ro;
@@ -75,13 +78,20 @@ int main(int argc, char** argv){
       continue;
 
     fclose(stream);
-
+#ifdef RAND
+    sprintf(buf, "../rand_results/res_%d_%d_%s", ANT_NUMBER, TMAX, argv[i]);
+#else
     sprintf(buf, "../results/res_%d_%d_%s", ANT_NUMBER, TMAX, argv[i]);
+#endif
     stream = fopen(buf, "w");
     if(!stream)
       continue;
-    
+
+#ifdef RAND
+    sprintf(buf, "../rand_results/time_%d_%d_%s", ANT_NUMBER, TMAX, argv[i]);
+#else
     sprintf(buf, "../results/time_%d_%d_%s", ANT_NUMBER, TMAX, argv[i]);
+#endif
     stream2 = fopen(buf, "w");
     if(!stream2)
       continue;

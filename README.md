@@ -28,20 +28,38 @@ The goal here is to implement an heuristic to obtain a good solution for the pro
 ### Modeling
 We choose to model this problem as a pair of non-oriented graphs G_a and G_o. 
 
+### Valid inputs
+A valid input is of the form (i x y\\n)\* with i an integer and x, y two floats.
+Moreover the on the first row, (x,y) should be (0, 0).
+
+## File Organisation
+- `src/` contains the sources of the project;
+- `bin/` contains the makefile and the binary files;
+- `results/` is where the results are stored;
+- `instances/` some instances for the project.
+
 ## Usage
+### Compilation 
 
-The main program will run the ant\_colony algorithm on the given input files.
-The input files must be in `instances` folder, and you must only specify their name, NOT their path.
-The result are stored in `results`.
+To compute the different executables of the projet, you can simply do : 
+```
+$cd bin
+$make {RAND=1}
+```
+If you chose to set RAND to 1, the construction procedure will be more randomised (but with very little differences in practice).
 
-```
-$cd bin 
-$make 
-$./main.out input_files 
-```
+### Execution 
+There is two executables in this project.
+
+#### main.out
+`main.out {input files}` will run the algorithm on each different combination of (R_a, R_o, k) and store the results in `{rand_}results/`. 
+The input file must be located in `instances/` and you should only pass the filename to the executable. Check the Makefile for more details 
+
+#### single.out
+`single.out` runs the algorithm for the given parameters, prints out the result. Check the Makefile and `src/single.c` for more details.
 
 ## Contributors
 
-- Daune *Yuli* FUNATO
+- Yuli Daune-Funato
 - Thibaut *Yéti* MILHAUD
 

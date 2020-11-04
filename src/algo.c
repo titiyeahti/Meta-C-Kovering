@@ -117,7 +117,7 @@ void ant_colony(sol_p res, uint ant_nb, uint tmax){
 #ifdef RAND
       greedy(cur, select_fortune_wheel, pherom);
 #else
-      greedy(cur, select_fortune_wheel, pherom);
+      greedy(cur, select_rand, pherom);
 #endif
 
       /* deposit */
