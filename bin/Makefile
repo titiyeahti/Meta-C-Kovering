@@ -1,8 +1,8 @@
 CC=gcc
 SRC=../src/
 INCLUDES=-lm
-FLAGS=-ansi -Wall -Wextra -g
 OPT=-O3
+FLAGS=-ansi -Wall -Wextra -g $(OPT)
 OBJ=file-handler.o graph.o queue.o problem.o algo.o
 
 all: test-graph.out test-problem.out test-file-handler.out test-greedy.out
