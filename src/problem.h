@@ -52,6 +52,8 @@ typedef struct sol{
   ind_p in_queue;
   queue_p queue;
   char* cover;
+  uint* score;
+
   uint card;
   int remaining;
 } sol_t;
@@ -68,10 +70,12 @@ sol_p sol_empty(prob_p p);
 
 int sol_is_connected(sol_p sol);
 
+uint sol_compute_score(sol_p sol, uint i);
+
 /* Ensure : the score of i in sol, i.e. the number of useful covers if
  *    i is ad added to the solution.
  * Require : i < sol->prob->n*/
-uint sol_score(sol_p sol, uint i);
+#define sol_score(sol,i) sol->score[i];
 
 void sol_copy(sol_p dest, sol_p src);
 
@@ -81,6 +85,7 @@ void sol_add_select(sol_p sol,
     uint(*select)(sol_p, void*), 
     void* arg);
 
+/* WARNING OBSOLETE -> DO NOT USE */
 /* select a random valid neighbour of sol :
  * */
 int sol_rand_neigh(sol_p sol);

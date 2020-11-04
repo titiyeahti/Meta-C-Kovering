@@ -20,8 +20,7 @@
 #include <time.h>
 #include "algo.h"
 
-#define NB_RUNS 4
-#define MAX_IT 100
+#define NB_RUNS 100
 
 int double_compare(const void* x, const void* y){
   double* fx = (double*)x;

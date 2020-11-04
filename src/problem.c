@@ -75,9 +75,15 @@ sol_p sol_empty(prob_p p){
   }
 
   res->cover = malloc((p->n)*sizeof(char));
-  for(k=0; k<p->n; k++){
+  res->score = malloc((p->n)*sizeof(uint));
+  
+  for(k=0; k<p->n; k++)
     res->cover[k] = 0;
-  }
+
+  for(k=0; k<p->n; k++)
+    res->score[k] = sol_compute_score(res, k);
+
+  res->score[0] = 0;
 
   res->card = 0;
   res->remaining = p->n - 1;
@@ -91,7 +97,7 @@ int sol_is_connected(sol_p sol){
   return res;
 }
 
-uint sol_score(sol_p sol, uint i){
+uint sol_compute_score(sol_p sol, uint i){
   uint res = 0;
   uint* v = NULL;
 
@@ -99,7 +105,8 @@ uint sol_score(sol_p sol, uint i){
     res ++;
 
   FOR_ALL_NEIGH(sol->prob->cover, i, v){
-    if(sol->cover[*v] <  sol->prob->k)
+    /* the well, 0 does not count */
+    if(*v && (sol->cover[*v] <  sol->prob->k))
       res ++;
   }
 
@@ -115,6 +122,7 @@ void sol_copy(sol_p dest, sol_p src){
   IND_COPY(dest->ind, src->ind, src->prob->n);
   IND_COPY(dest->in_queue, src->in_queue, src->prob->n);
   memcpy(dest->cover, src->cover, src->prob->n * sizeof(char));
+  memcpy(dest->score, src->score, src->prob->n * sizeof(uint));
   dest->card = src->card;
   dest->remaining = src->remaining;
 }
@@ -152,10 +160,16 @@ void sol_add_queue_id(sol_p sol, uint i){
   if((sol->cover[cur] == sol->prob->k)&& cur )
     sol->remaining --;
 
+  if(sol->score[cur])
+    sol->score[cur]--;
+
   FOR_ALL_NEIGH(sol->prob->cover, cur, v){
     sol->cover[*v] ++;
     if((sol->cover[*v] == sol->prob->k)&&(*v))
       sol->remaining --;
+    
+    if(sol->score[*v])
+      sol->score[*v]--;
   }
 }
 
@@ -229,6 +243,9 @@ void sol_free(sol_p sol){
   queue_free(sol->queue);
   free(sol->cover);
   sol->cover = NULL;
+
+  free(sol->score);
+  sol->score = NULL;
 
   free(sol);
   sol = NULL;

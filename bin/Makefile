@@ -10,6 +10,12 @@ all : main.out
 run : main.out
 	./main.out captANOR150_7_4.dat
 
+run_single : single.out
+	./single.out ../instances/captANOR150_7_4.dat 3 2 3 16 150
+
+single.out : $(SRC)single.c $(OBJ)
+	$(CC) $(FLAGS) $(INCLUDES) $^ -o $@
+
 main.out : $(SRC)main.c $(OBJ)
 	$(CC) $(FLAGS) $(INCLUDES) $^ -o $@
 

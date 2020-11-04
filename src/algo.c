@@ -273,6 +273,7 @@ uint select_fortune_wheel(sol_p sol, void* arg){
   acc_score = malloc(sizeof(float)*(q_card + 1));
   acc_score[0] = 0;
 
+
   k = 1;
   QUEUE_ITER(sol->queue, v){
     acc_score[k] = acc_score[k-1] + (float) sol_score(sol, *v);
