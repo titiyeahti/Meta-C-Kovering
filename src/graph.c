@@ -27,50 +27,49 @@ graph_p graph_new(uint n){
   return res;
 }
 
-graph_p graph_subgraph(graph_p g, ind_p ind){
-  uint k, i, card, m, cur, spot;
-  uint* s;
-  uint* new_indices;
-  graph_p res;
-
-  IND_CARD(ind, g->n, k, card);
-  res = graph_new(card);
-  new_indices = malloc(card*sizeof(uint));
-
-  /* Counting the edges in the subgraph;
-   * Replacing the indices of the vertices*/
-  cur = 0;
-  for(k=0; k<g->n; k++){
-    if(IND_TEST(ind, k)){
-      new_indices[cur] = k;
-      cur ++;
-      FOR_ALL_NEIGH(g, i, s){
-        if(IND_TEST(ind, *s))
-          m++;
-      }
-    }
-  }
-
-  res->edges = malloc(m*sizeof(uint));
-
-  /* Building res->edges & res->vertices */
-  for(k=0; k<g->n; k++){
-    if(IND_TEST(ind, k)){
-      cur = new_indices[k];
-      m = 0;
-      spot = res->vertices[cur];
-      FOR_ALL_NEIGH(g, i, s){
-        if(IND_TEST(ind, *s)){
-          res->edges[spot+m] = new_indices[*s];
-          m++;
-        }
-      }
-      res->vertices[cur+1] = spot + m;
-    }
-  }
-
-  return res;
-}
+/* graph_p graph_subgraph(graph_p g, ind_p ind){
+ *   uint k, i, card, m, cur, spot;
+ *   uint* s;
+ *   uint* new_indices;
+ *   graph_p res;
+ * 
+ *   IND_CARD(ind, g->n, k, card);
+ *   res = graph_new(card);
+ *   new_indices = malloc(card*sizeof(uint));
+ * 
+ *   cur = 0;
+ *   m = 0;
+ *   for(k=0; k<g->n; k++){
+ *     if(IND_TEST(ind, k)){
+ *       new_indices[cur] = k;
+ *       cur ++;
+ *       FOR_ALL_NEIGH(g, k, s){
+ *         if(IND_TEST(ind, *s))
+ *           m++;
+ *       }
+ *     }
+ *   }
+ * 
+ *   res->edges = malloc(m*sizeof(uint));
+ * 
+ *   for(k=0; k<g->n; k++){
+ *     if(IND_TEST(ind, k)){
+ *       cur = new_indices[k];
+ *       m = 0;
+ *       spot = res->vertices[cur];
+ *       FOR_ALL_NEIGH(g, i, s){
+ *         if(IND_TEST(ind, *s)){
+ *           res->edges[spot+m] = new_indices[*s];
+ *           m++;
+ *         }
+ *       }
+ *       res->vertices[cur+1] = spot + m;
+ *     }
+ *   }
+ * 
+ *   return res;
+ * }
+ */
 
 /*  TODO test this thing */
 void graph_connect(graph_p g, ind_p ind){
@@ -163,7 +162,6 @@ int graph_is_connected_subgraph(graph_p g, ind_p ind){
 }
 
 graph_p graph_from_coord(float* coord, char r, uint n){
-  uint* temp;
   graph_p res;
   uint m, i, j, spot;
   float dist2;

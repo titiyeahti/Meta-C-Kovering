@@ -19,7 +19,7 @@
 #include "queue.h"
 
 queue_p queue_new(uint n){
-  queue_p ret = malloc(sizeof(queue_p));
+  queue_p ret = malloc(sizeof(queue_t));
   ret->top = 0;
   ret->bot = 0;
   ret->n = n;

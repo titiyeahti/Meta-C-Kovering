@@ -54,8 +54,8 @@ typedef graph_t * graph_p;
 
 /* iterate over the pointer to neighbour */
 #define FOR_ALL_NEIGH(G, i, n)\
-  for(n = (G)->edges + (G)->vertices[i]; \
-      n < (G)->edges + (G)->vertices[i+1]; \
+  for(n = &(G)->edges[(G)->vertices[i]]; \
+      n < &(G)->edges[(G)->vertices[i+1]]; \
       n++)
 
 /* A subgraph SG is represented as the tupple G, ind, where ind indicate 
@@ -74,7 +74,9 @@ graph_p graph_new(uint n);
  * Require : ind should be a valid indicator of size at least g->n.
  * WARNING : malloc.
  * */
-graph_p graph_subgraph(graph_p g, ind_p ind);
+
+/*  graph_p graph_subgraph(graph_p g, ind_p ind);*/
+
 
 /* Ensure : given g and ind, updates ind so that, at the ind, the subgraph
  *    coded by (g, ind union {0}) is connected.

@@ -34,9 +34,9 @@ typedef uchar* ind_p;
 
 #define IND_COPY(dest, src, n) memcpy(dest, src, ((n)>>3)+1)
 
-#define IND_SET(ind, i) (ind)[(i)>>3] |= 1<<((i)&7)
+#define IND_SET(ind, i) ind[(i)>>3] |= 1<<((i)&7)
 
-#define IND_FLIP(ind, i) (ind)[(i)>>3] ^= 1<<((i)&7)
+#define IND_FLIP(ind, i) ind[(i)>>3] ^= 1<<((i)&7)
 
 #define IND_UNSET(ind, i) (ind)[(i)>>3] &= (255^(1<<((i)&7)))
 

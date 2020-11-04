@@ -21,9 +21,11 @@
 void greedy(sol_p res, 
     uint (*select)(sol_p, void*), 
     void* arg){
+  
 
-  while((res->remaining > 0) && (QUEUE_CARD(res->queue)>0))
+  while((res->remaining > 0) && (QUEUE_CARD(res->queue)>0)){
     sol_add_select(res, select, arg);
+  }
 
   if(res->remaining > 0){
     printf("non connected input\n");
@@ -47,7 +49,7 @@ void sim_annealing(sol_p s0, float t0, float mu){
   k = s0->prob->n * NB_IT_COEFF;
   temp = t0;
 
-  for(k; k > 0; k --){
+  for(k=0; k<s0->prob->n; k++){
     /* update neigh */
     sol_copy(neigh, current);
 
@@ -215,10 +217,8 @@ uint select_best(sol_p sol, void* arg){
 
   k=0;
   index=0;
-  printf(" queue card = %d \n", QUEUE_CARD(sol->queue));
   QUEUE_ITER(sol->queue, v){
     cur = sol_score(sol, *v);
-      printf("best = %d, cur = %d, index = %d\n", best, cur, index);
     if(cur > best){
       best = cur;
       index = k; 

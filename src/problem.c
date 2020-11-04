@@ -18,10 +18,18 @@
 
 #include "problem.h"
 
+void print_tab(char* t, uint n){
+  uint i;
+  for(i=0; i<(n>>1); i++){
+    printf("%d ", t[i]);
+  }
+  printf("\n");
+}
+
 prob_p prob_from_file(char* path, char ra, char ro, char k){
   prob_p res;
   uint n;
-  res = malloc(sizeof(prob_p));
+  res = malloc(sizeof(prob_t));
   res->coord = coord_from_file(path, &n);
   res->cover = graph_from_coord(res->coord, ra, n);
   res->connect = graph_from_coord(res->coord, ro, n);
@@ -47,17 +55,19 @@ sol_p sol_empty(prob_p p){
   uint *v;
   sol_p res;
 
-  res = malloc(sizeof(sol_p));
+  res = malloc(sizeof(sol_t));
 
   res->prob = p;
 
   res->ind = IND_NEW(p->n);
-  IND_CLEAR(res->ind, p->n, k) ;
+  IND_CLEAR(res->ind, p->n, k);
   
   res->in_queue = IND_NEW(p->n);
   IND_CLEAR(res->in_queue, p->n, k);
 
   res->queue = queue_new(p->n);
+
+  IND_SET(res->ind, 0);
 
   FOR_ALL_NEIGH(p->connect, 0, v){
     queue_push(res->queue, *v);
@@ -65,8 +75,9 @@ sol_p sol_empty(prob_p p){
   }
 
   res->cover = malloc((p->n)*sizeof(char));
-  for(k=0; k<p->n; k++)
+  for(k=0; k<p->n; k++){
     res->cover[k] = 0;
+  }
 
   res->card = 0;
   res->remaining = p->n - 1;
@@ -82,7 +93,7 @@ int sol_is_connected(sol_p sol){
 
 uint sol_score(sol_p sol, uint i){
   uint res = 0;
-  uint* v;
+  uint* v = NULL;
 
   if(sol->cover[i] < sol->prob->k)
     res ++;
@@ -115,7 +126,9 @@ void sol_add_queue_id(sol_p sol, uint i){
    * done in queue_pop_id*/
   
   /* update queue */
+
   cur = queue_pop_id(sol->queue, i);
+
   /* update in_queue */
   IND_UNSET(sol->in_queue, cur);
 
@@ -123,6 +136,7 @@ void sol_add_queue_id(sol_p sol, uint i){
   IND_SET(sol->ind, cur);
   /* update card */
   sol->card ++;
+  
 
   FOR_ALL_NEIGH(sol->prob->connect, cur, v){
     /* if *v is neither in the queue nor in the curent sol (ind) */
@@ -134,13 +148,13 @@ void sol_add_queue_id(sol_p sol, uint i){
 
   /* update cover & remaining */
   sol->cover[cur] ++;
-  /* if cur is covered AND cur is not 0 (the well) */
-  if((sol->cover[cur] = sol->prob->k) && cur)
+  /* if cur is covered */
+  if((sol->cover[cur] == sol->prob->k))
     sol->remaining --;
 
   FOR_ALL_NEIGH(sol->prob->cover, cur, v){
-    sol->cover[cur] ++;
-    if((sol->cover[*v] = sol->prob->k) && cur)
+    sol->cover[*v] ++;
+    if((sol->cover[*v] == sol->prob->k))
       sol->remaining --;
   }
 }
@@ -149,9 +163,10 @@ void sol_add_select(sol_p sol,
     uint(*select)(sol_p, void*),
     void* arg){
   uint index;
+
   index = select(sol, arg);
+
   sol_add_queue_id(sol, index);
-  printf("end of sol_add_select\n");
 }
 
 int sol_rand_neigh(sol_p sol){
@@ -210,11 +225,8 @@ void sol_free(sol_p sol){
   free(sol->in_queue);
   sol->in_queue = NULL;
 
-  /* TODO make this work */
-/*   free(sol->ind);
- *   sol->ind = NULL;
- */
-
+  free(sol->ind);
+  sol->ind = NULL;
 
   queue_free(sol->queue);
   free(sol->cover);
