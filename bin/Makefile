@@ -2,10 +2,15 @@ CC=gcc
 SRC=../src/
 INCLUDES=-lm
 OPT=-O3
-FLAGS=-ansi -Wall -Wextra -g $(OPT)
 OBJ=file-handler.o graph.o queue.o problem.o algo.o
 
-all : main.out
+ifeq ($(RAND), 1)
+FLAGS= -ansi -Wall -Wextra -g $(OPT) -DRAND 
+else 
+FLAGS=-ansi -Wall -Wextra -g $(OPT)
+endif
+
+all : main.out single.out
 
 run : main.out
 	./main.out captANOR150_7_4.dat

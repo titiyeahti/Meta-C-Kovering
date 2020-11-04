@@ -36,7 +36,7 @@
 #define TMAX 200
 
 /* deposit coeff */
-#define Q_COEFF .1
+#define Q_COEFF 10.
 
 
 /* Ensure : res contains a valid solution at the end.
@@ -71,5 +71,7 @@ uint select_best(sol_p sol, void* arg);
  * Require : arg must be either NULL or 
  *    a float array of length sol->prob ->n */
 uint select_fortune_wheel(sol_p sol, void* arg);
+
+uint select_rand(sol_p sol, void* arg);
 
 #endif   /* ----- #ifndef algo_INC  ----- */

@@ -113,7 +113,12 @@ void ant_colony(sol_p res, uint ant_nb, uint tmax){
   for(t=0; t<tmax; t++){
     for(ant=0; ant < ant_nb; ant++){
       sol_copy(cur, res);
+
+#ifdef RAND
       greedy(cur, select_fortune_wheel, pherom);
+#else
+      greedy(cur, select_fortune_wheel, pherom);
+#endif
 
       /* deposit */
       for(i=0; i<res->prob->n; i++){
@@ -189,7 +194,7 @@ void ant_colony_sa(sol_p res, uint ant_nb, uint tmax, float t0, float mu){
 
     /* evap */
     for(i=0; i<res->prob->n; i++){
-      pherom[i] = RHO*pherom[i] + (1-RHO)*pherom_new[i];
+      pherom[i] = RHO*pherom[i] + pherom_new[i];
       pherom_new[i] = 0;
     }
   }
@@ -288,6 +293,39 @@ uint select_fortune_wheel(sol_p sol, void* arg){
   return k;
 }
 
+uint select_rand(sol_p sol, void* arg){
+  float* acc_score;
+  float* pherom; 
+  float random;
+  uint* v;
+  uint k;
+  uint q_card;
+
+  q_card = QUEUE_CARD(sol->queue);
+
+  if(!q_card){
+    fprintf(stderr, "sol->queue is empty\n");
+    EXIT_ERROR("select_fortune_wheel");
+  }
+
+  pherom = (float*) arg;
+  acc_score = malloc(sizeof(float)*(q_card + 1));
+  acc_score[0] = 0;
+
+
+  k = 1;
+  QUEUE_ITER(sol->queue, v){
+    acc_score[k] = acc_score[k-1] + 1.;
+    /* If arg non NULL, we add the pheromon value */
+    acc_score[k] += arg ? pherom[*v] : 0;
+    k++;
+  }
+
+  random = RAND_FLOAT(0, acc_score[q_card]); 
+  k = dich_spot(acc_score, random, q_card+1);
+  free(acc_score);
+  return k;
+}
 
 
 /* TODO the coeff Q on th pheromone part is given by const*n/nb_ant */
